@@ -39,6 +39,7 @@
             this.buscaContato = new System.Windows.Forms.Label();
             this.txtBuscar = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -103,10 +104,12 @@
             // lst_contatos
             // 
             this.lst_contatos.Location = new System.Drawing.Point(227, 67);
+            this.lst_contatos.MultiSelect = false;
             this.lst_contatos.Name = "lst_contatos";
             this.lst_contatos.Size = new System.Drawing.Size(434, 355);
             this.lst_contatos.TabIndex = 7;
             this.lst_contatos.UseCompatibleStateImageBehavior = false;
+            this.lst_contatos.SelectedIndexChanged += new System.EventHandler(this.lst_contatos_ItemSelectionChanged);
             // 
             // buscaContato
             // 
@@ -134,11 +137,22 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(52, 145);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 11;
+            this.button4.Text = "Novo";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(673, 434);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.txtBuscar);
             this.Controls.Add(this.buscaContato);
@@ -171,5 +185,6 @@
         private Label buscaContato;
         private TextBox txtBuscar;
         private Button button2;
+        private Button button4;
     }
 }
