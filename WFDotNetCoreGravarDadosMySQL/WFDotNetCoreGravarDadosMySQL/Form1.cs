@@ -1,4 +1,6 @@
 using MySql.Data.MySqlClient;
+using System.Reflection.Metadata.Ecma335;
+
 namespace WFDotNetCoreGravarDadosMySQL {
     public partial class Form1 : Form {
         private MySqlConnection Conexao;
@@ -6,7 +8,7 @@ namespace WFDotNetCoreGravarDadosMySQL {
         // Data source precisa passar o host, usuário, senha
         private int? idContatoSelecionado = null;
 
-        public Form1(){
+        public Form1() {
             InitializeComponent();
             // Propriedades adicionadas
             lst_contatos.View = View.Details;
@@ -52,7 +54,8 @@ namespace WFDotNetCoreGravarDadosMySQL {
                     cmd.Prepare();
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("Contato Inserido com Sucesso!", "Sucesso!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                } else {
+                }
+                else {
                     // Atualização de contato.
                     cmd.CommandText = "UPDATE contato SET nome = @nome, email = @email, telefone = @telefone WHERE id = @id";
 
@@ -67,14 +70,12 @@ namespace WFDotNetCoreGravarDadosMySQL {
                     MessageBox.Show("Contato Atualizado com Sucesso!", "Sucesso!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
-                idContatoSelecionado = null;
-                txtNome.Text = String.Empty;
-                txtEmail.Text = String.Empty;
-                txtTelefone.Text = String.Empty;
+                ZerarFormulario();
 
                 CarregarContatos();
 
-            } catch (MySqlException ex) {
+            }
+            catch (MySqlException ex) {
                 MessageBox.Show("Erro: " + ex.Number + "Ocorreu: " + ex.Message, "Erro: ", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex) {
@@ -171,15 +172,63 @@ namespace WFDotNetCoreGravarDadosMySQL {
                 txtNome.Text = item.SubItems[1].Text;
                 txtEmail.Text = item.SubItems[2].Text;
                 txtTelefone.Text = item.SubItems[3].Text;
+                BtnExcluir.Visible = true;
             }
         }
 
-        private void button4_Click(object sender, EventArgs e) {
+        private void btnNovo_Click(object sender, EventArgs e) {
+            ZerarFormulario();
+        }
+
+        public void ZerarFormulario() {
             idContatoSelecionado = null;
             txtNome.Text = String.Empty;
             txtEmail.Text = String.Empty;
             txtTelefone.Text = String.Empty;
             txtNome.Focus();
+            BtnExcluir.Visible = false;
+        }
+
+        private void ExcluirContato_Click(object sender, EventArgs e) {
+            ExcluirContato();
+        }
+
+        private void Excluir_Click(object sender, EventArgs e) {
+            ExcluirContato();
+        }
+
+        private void ExcluirContato() {
+            try {
+
+                DialogResult conf = MessageBox.Show("Tem certeza que deseja excluir o registro?", "Ops, tem certeza?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                if (conf == DialogResult.Yes) {
+                    Conexao = new MySqlConnection(data_source);
+                    Conexao.Open();
+                    MySqlCommand cmd = new MySqlCommand();
+
+                    cmd.Connection = Conexao;
+                    cmd.CommandText = "DELETE FROM contato WHERE id = @id";
+                    cmd.Parameters.AddWithValue("@id", idContatoSelecionado);
+                    cmd.Prepare();
+
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Contato Excluído com Sucesso!", "Sucesso!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    CarregarContatos();
+                    ZerarFormulario();
+                }
+
+            }
+            catch (MySqlException ex) {
+                MessageBox.Show("Erro: " + ex.Number + "Ocorreu: " + ex.Message, "Erro: ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex) {
+                MessageBox.Show("Error has occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally {
+                Conexao.Close();
+            }
         }
     }
 }
